@@ -1,0 +1,61 @@
+<nodeDefs>
+    <!-- NODE DEF from 5.0 document http://wiki.universal-devices.com/index.php?title=V50_MAIN -->
+    <!-- controller, this must mach the id in your Controller class-->
+    <nodeDef id="controller" nls="ctl">
+        <editors />
+        <sts>
+			<st id="ST" editor="bool" />
+		</sts>
+        <cmds>
+            <sends />
+            <accepts>
+              <cmd id="QUERY" />
+              <cmd id="DISCOVER" />
+              <cmd id="REMOVE_NOTICES_ALL" />
+              <cmd id="REMOVE_NOTICE_TEST" />
+              <cmd id="UPDATE_PROFILE" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+    <!-- gateway -->
+    <nodeDef id="gateway" nls="gateway">
+        <editors />
+        <sts>
+            <st id="ST" editor="bool" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+	<!-- taplinker -->
+    <nodeDef id="taplinker" nls="taplinker">
+        <editors />
+        <sts>
+            <st id="ST" editor="bool" />
+            <st id="BATLVL" editor="BATLVL" />
+            <st id="GV0" editor="GV0" /> <!-- Signal -->
+            <st id="GV1" editor="bool" /> <!-- Watering -->
+            <st id="GV2" editor="GPV" /> <!-- Remaining -->
+            <st id="GV3" editor="GPV" /> <!-- Total -->
+            <st id="GV4" editor="GPV" /> <!-- Elapsed -->
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="GV6" />
+                <cmd id="GV7" />
+                <cmd id="GV8" />
+                <cmd id="GV9" />
+                <cmd id="GV5">
+                    <p id="" editor="GV5"/>
+                </cmd>
+            </accepts>
+        </cmds>
+    </nodeDef>
+</nodeDefs>

@@ -1,0 +1,27 @@
+# controller
+ND-controller-NAME = Template NodeServer Controller
+CMD-ctl-QUERY"-NAME = Query
+CMD-ctl-DISCOVER-NAME = Re-Discover
+CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
+CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove All Notices
+CMD-ctl-REMOVE_NOTICE_TEST-NAME = Remove Notice Test
+ST-ctl-ST-NAME = NodeServer Online
+
+# LinkTap Gateway
+ND-gateway-NAME = LinkTap Gateway
+ST-gateway-ST-NAME = Status
+
+# LinkTap TapLink
+ND-taplinker-NAME = TapLinker Node
+ST-taplinker-ST-NAME = Status
+ST-taplinker-BATLVL-NAME = Battery
+ST-taplinker-GV0-NAME = Signal
+ST-taplinker-GV1-NAME = Watering
+ST-taplinker-GV2-NAME = Watering Time Remaining
+ST-taplinker-GV3-NAME = Watering Time Total
+ST-taplinker-GV4-NAME = Watering Time Elapsed
+CMD-taplinker-GV5-NAME = Instant On
+CMD-taplinker-GV6-NAME = Interval Mode
+CMD-taplinker-GV7-NAME = Odd-Even Mode
+CMD-taplinker-GV8-NAME = Seven Day Mode
+CMD-taplinker-GV9-NAME = Month Mode
