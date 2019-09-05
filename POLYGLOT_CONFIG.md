@@ -4,7 +4,7 @@
 - Requires a valid username and apiKey from Linktap.  You can retrieve that from
 the following [LinkTap API](https://www.link-tap.com/#!/api-for-developers)
 
-- Update intervale is default 5 (five) minutes 300 seconds.  The minimum update interval is 60 seconds.
+- Update interval is default 5 (five) minutes 300 seconds.  The minimum update interval is 60 seconds.
 - Only the long poll triggers the update from the LinkTap API.
 - Gateway and TapLinkers nodes are created with the name you have given them via the LinkTap mobile app.
 Rename them as needed/wanted.
