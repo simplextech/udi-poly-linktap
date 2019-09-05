@@ -5,15 +5,15 @@
     </editor>
 
     <editor id="BATLVL">
-        <range uom="51" subset="0,100" />
+        <range uom="51" min="0" max="100" step="1" prec="0" />
     </editor>
 
     <editor id="GV0"> <!-- Signal Level -->
-        <range uom="51" subset="0,100" />
+        <range uom="51" min="0" max="100" step="1" prec="0" />
     </editor>
 
     <editor id="GPV"> <!-- General Purpose Minutes -->
-        <range uom="44" subset="0,120" />
+        <range uom="44" min="0" max="120" step="1" prec="0" />
     </editor>
 
     <editor id="GV5"> <!-- Instant On Minutes -->
