@@ -11,8 +11,8 @@
             <accepts>
               <cmd id="QUERY" />
               <cmd id="DISCOVER" />
-              <cmd id="REMOVE_NOTICES_ALL" />
-              <cmd id="REMOVE_NOTICE_TEST" />
+<!--              <cmd id="REMOVE_NOTICES_ALL" />-->
+<!--              <cmd id="REMOVE_NOTICE_TEST" />-->
               <cmd id="UPDATE_PROFILE" />
             </accepts>
         </cmds>
@@ -27,8 +27,8 @@
         <cmds>
             <sends />
             <accepts>
-                <cmd id="DON" />
-                <cmd id="DOF" />
+<!--                <cmd id="DON" />-->
+<!--                <cmd id="DOF" />-->
             </accepts>
         </cmds>
     </nodeDef>
