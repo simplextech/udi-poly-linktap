@@ -149,57 +149,18 @@ class Controller(polyinterface.Controller):
         st = self.poly.installprofile()
         return st
 
-    """
-    Optional.
-    Since the controller is the parent node in ISY, it will actual show up as a node.
-    So it needs to know the drivers and what id it will use. The drivers are
-    the defaults in the parent Class, so you don't need them unless you want to add to
-    them. The ST and GV1 variables are for reporting status through Polyglot to ISY,
-    DO NOT remove them. UOM 2 is boolean.
-    The id must match the nodeDef id="controller"
-    In the nodedefs.xml
-    """
+
     id = 'controller'
     commands = {
         'QUERY': query,
         'DISCOVER': discover,
         'UPDATE_PROFILE': update_profile
-        #'REMOVE_NOTICES_ALL': remove_notices_all,
-        #'REMOVE_NOTICE_TEST': remove_notice_test
     }
     drivers = [{'driver': 'ST', 'value': 1, 'uom': 2}]
 
 
 class GatewayNode(polyinterface.Node):
-    """
-    This is the class that all the Nodes will be represented by. You will add this to
-    Polyglot/ISY with the controller.addNode method.
-
-    Class Variables:
-    self.primary: String address of the Controller node.
-    self.parent: Easy access to the Controller Class from the node itself.
-    self.address: String address of this Node 14 character limit. (ISY limitation)
-    self.added: Boolean Confirmed added to ISY
-
-    Class Methods:
-    start(): This method is called once polyglot confirms the node is added to ISY.
-    setDriver('ST', 1, report = True, force = False):
-        This sets the driver 'ST' to 1. If report is False we do not report it to
-        Polyglot/ISY. If force is True, we send a report even if the value hasn't changed.
-    reportDrivers(): Forces a full update of all drivers to Polyglot/ISY.
-    query(): Called when ISY sends a query request to Polyglot for this specific node
-    """
     def __init__(self, controller, primary, address, name):
-        """
-        Optional.
-        Super runs all the parent class necessities. You do NOT have
-        to override the __init__ method, but if you do, you MUST call super.
-
-        :param controller: Reference to the Controller class
-        :param primary: Controller address
-        :param address: This nodes address
-        :param name: This nodes name
-        """
         super(GatewayNode, self).__init__(controller, primary, address, name)
         self.data = controller.data
 
@@ -229,21 +190,11 @@ class GatewayNode(polyinterface.Node):
                     self.setDriver('ST', 0)
 
 
-    "Hints See: https://github.com/UniversalDevicesInc/hints"
-    hint = [1,2,3,4]
+    # "Hints See: https://github.com/UniversalDevicesInc/hints"
+    # hint = [1,2,3,4]
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
-    """
-    Optional.
-    This is an array of dictionary items containing the variable names(drivers)
-    values and uoms(units of measure) from ISY. This is how ISY knows what kind
-    of variable to display. Check the UOM's in the WSDK for a complete list.
-    UOM 2 is boolean so the ISY will display 'True/False'
-    """
     id = 'gateway'
-    """
-    id of the node from the nodedefs.xml that is in the profile.zip. This tells
-    the ISY what fields and commands this node has.
-    """
+
     commands = {
                     'DON': setOn, 'DOF': setOff
                 }
@@ -251,16 +202,6 @@ class GatewayNode(polyinterface.Node):
 
 class TapLinkNode(polyinterface.Node):
     def __init__(self, controller, primary, address, name):
-        """
-        Optional.
-        Super runs all the parent class necessities. You do NOT have
-        to override the __init__ method, but if you do, you MUST call super.
-
-        :param controller: Reference to the Controller class
-        :param primary: Controller address
-        :param address: This nodes address
-        :param name: This nodes name
-        """
         super(TapLinkNode, self).__init__(controller, primary, address, name)
         self.data = controller.data
         self.primary = primary
@@ -285,7 +226,6 @@ class TapLinkNode(polyinterface.Node):
 
     def instantOn(self, command):
         dev_suffix = '004B1200'
-        cmd = command.get('cmd')
         val = command.get('value')
         taplinker = command.get('address') + dev_suffix
         gateway = self.primary + dev_suffix
@@ -333,7 +273,7 @@ class TapLinkNode(polyinterface.Node):
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activateMonthMode(gateway, taplinker)
 
-    "Hints See: https://github.com/UniversalDevicesInc/hints"
+    # "Hints See: https://github.com/UniversalDevicesInc/hints"
     #hint = [1,2,3,4]
     drivers = [
         {'driver': 'ST', 'value': 0, 'uom': 2},
@@ -345,18 +285,8 @@ class TapLinkNode(polyinterface.Node):
         {'driver': 'GV4', 'value': 0, 'uom': 44},  # Elapsed
         {'driver': 'GV5', 'value': 0, 'uom': 44},  # Instant On Minutes
     ]
-    """
-    Optional.
-    This is an array of dictionary items containing the variable names(drivers)
-    values and uoms(units of measure) from ISY. This is how ISY knows what kind
-    of variable to display. Check the UOM's in the WSDK for a complete list.
-    UOM 2 is boolean so the ISY will display 'True/False'
-    """
+
     id = 'taplinker'
-    """
-    id of the node from the nodedefs.xml that is in the profile.zip. This tells
-    the ISY what fields and commands this node has.
-    """
     commands = {
                 'GV5': instantOn, 'GV6': intervalMode, 'GV7': oddEvenMode, 'GV8': sevenDayMode, 'GV9': monthMode
                 }
