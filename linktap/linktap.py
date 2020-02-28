@@ -35,8 +35,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.content)
-            r.raise_for_status()
+            print(r.content)
+            # r.raise_for_status()
 
     def activateIntervalMode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateIntervalMode'
@@ -51,8 +51,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.content)
-            r.raise_for_status()
+            print(r.content)
+            # r.raise_for_status()
 
     def activateOddEvenMode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateOddEvenMode'
@@ -67,8 +67,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.content)
-            r.raise_for_status()
+            print(r.content)
+            # r.raise_for_status()
 
     def activateSevenDayMode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateSevenDayMode'
@@ -83,8 +83,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.content)
-            r.raise_for_status()
+            print(r.content)
+            # r.raise_for_status()
 
     def activateMonthMode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateMonthMode'
@@ -99,8 +99,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.status_code)
-            r.raise_for_status()
+            print(r.status_code)
+            # r.raise_for_status()
 
     def getAllDevices(self):
         url = self.base_url + 'getAllDevices'
@@ -110,8 +110,8 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            # print(r.status_code)
-            r.raise_for_status()
+            print(r.status_code)
+            # r.raise_for_status()
 
 
 if __name__ == "__main__":
@@ -121,8 +121,6 @@ if __name__ == "__main__":
         with open('test_data.json') as json_file:
             all_devices = json.load(json_file)
 
-        #lt = LinkTap()
-        #all_devices = lt.getAllDevices()
         for ctl in all_devices['devices']:
             print('Name: ' + ctl['name'])
             print('Gateway ID: ' + ctl['gatewayId'])
@@ -142,13 +140,6 @@ if __name__ == "__main__":
                         for i in tl['watering']:
                             print(i)
                             print(tl['watering'][i])
-                        # print('Watering Remaining')
-
-
-        # for ctl in all_devices['devices']:
-        #     for tl in ctl['taplinker']:
-        #         print('TL Name: ' + tl['taplinkerName'])
-        #         print('TL ID: ' + tl['taplinkerId'][0:8].lower())
 
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
