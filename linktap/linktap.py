@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
+try:
+    import polyinterface
+except ImportError:
+    import pgc_interface as polyinterface
 import sys
 import requests
 
+LOGGER = polyinterface.LOGGER
 
 class LinkTap:
     def __init__(self, username, apiKey):
@@ -35,7 +40,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.content)
+            LOGGER.debug(r.content)
             # r.raise_for_status()
 
     def activateIntervalMode(self, gatewayId, taplinkerId):
@@ -51,7 +56,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.content)
+            LOGGER.debug(r.content)
             # r.raise_for_status()
 
     def activateOddEvenMode(self, gatewayId, taplinkerId):
@@ -67,7 +72,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.content)
+            LOGGER.debug(r.content)
             # r.raise_for_status()
 
     def activateSevenDayMode(self, gatewayId, taplinkerId):
@@ -83,7 +88,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.content)
+            LOGGER.debug(r.content)
             # r.raise_for_status()
 
     def activateMonthMode(self, gatewayId, taplinkerId):
@@ -99,7 +104,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.status_code)
+            LOGGER.debug(r.status_code)
             # r.raise_for_status()
 
     def getAllDevices(self):
@@ -110,7 +115,7 @@ class LinkTap:
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
-            print(r.status_code)
+            LOGGER.debug(r.status_code)
             # r.raise_for_status()
 
 
