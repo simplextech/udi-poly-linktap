@@ -4,7 +4,8 @@
 - Requires a valid username and apiKey from Linktap.  You can retrieve that from
 the following [LinkTap API](https://www.link-tap.com/#!/api-for-developers)
 
-- Update interval is default 5 (five) minutes 300 seconds.  The minimum update interval is 60 seconds.
+- Update interval is 5 (five) minutes 300 seconds for all devices
+- Watering Status update is 30 seconds (default) using short poll configuration.  30 seconds is the lowest allowed.
 - Only the long poll triggers the update from the LinkTap API.
 - Gateway and TapLinkers nodes are created with the name you have given them via the LinkTap mobile app.
 Rename them as needed/wanted.

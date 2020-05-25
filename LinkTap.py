@@ -28,7 +28,8 @@ class Controller(polyinterface.Controller):
                 self.discover()
                 self.ready = True
             else:
-                LOGGER.info("start: Failed to start due to API error.")
+                LOGGER.info("start: Failed to start due to API error.  Shutting down.")
+                polyglot.stop()
 
     def get_link_tap_devices(self):
         lt = linktap.LinkTap(self.username, self.apiKey)
@@ -42,17 +43,32 @@ class Controller(polyinterface.Controller):
 
     def shortPoll(self):
         # Update Watering Status
-        LOGGER.info("Updating Watering Status")
-        for node in self.nodes:
-            if self.nodes[node].address != self.address:
-                for gw in self.data['devices']:
-                    for tl in gw['taplinker']:
-                        if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
-                            if tl['status'] == 'Connected':
-                                link_tap = linktap.LinkTap(self.username, self.apiKey)
-                                watering_status = link_tap.get_watering_status(tl['taplinkerId'])
-                                self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
-                                self.nodes[node].setDriver('GV3', watering_status['status']['total'])
+        if self.ready:
+            # LOGGER.info("Updating Watering Status")
+            for node in self.nodes:
+                if self.nodes[node].address != self.address:
+                    for gw in self.data['devices']:
+                        for tl in gw['taplinker']:
+                            if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
+                                if tl['status'] == 'Connected':
+                                    link_tap = linktap.LinkTap(self.username, self.apiKey)
+                                    watering_status = link_tap.get_watering_status(tl['taplinkerId'])
+                                    if watering_status['status'] is not None:
+                                        # print(watering_status)
+                                        if watering_status['status']['onDuration']:
+                                            self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
+                                        if watering_status['status']['total']:
+                                            self.nodes[node].setDriver('GV3', watering_status['status']['total'])
+                                            watering_total = int(watering_status['status']['total'])
+                                            watering_duration = int(watering_status['status']['onDuration'])
+                                            watering_elapsed = watering_total - watering_duration
+                                            self.nodes[node].setDriver('GV4', watering_elapsed)
+                                    else:
+                                        self.nodes[node].setDriver('GV2', 0)
+                                        self.nodes[node].setDriver('GV3', 0)
+                                        self.nodes[node].setDriver('GV4', 0)
+        else:
+            pass
 
     def longPoll(self):
         if self.ready:

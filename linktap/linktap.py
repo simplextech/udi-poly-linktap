@@ -145,6 +145,7 @@ class LinkTap:
                    'taplinkerId': taplinkerId
                    }
         ret = self.call_api(url, payload)
+        # LOGGER.info(ret)
         return ret
 
 
