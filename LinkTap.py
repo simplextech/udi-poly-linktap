@@ -276,6 +276,8 @@ class TapLinkNode(polyinterface.Node):
 
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activate_instant_mode(gateway, taplinker, action, duration, eco)
+        self.setDriver('GV2', duration)
+        self.setDriver('GV3', duration)
 
     def intervalMode(self, command):
         # dev_suffix = '004B1200'
