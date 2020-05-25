@@ -53,20 +53,23 @@ class Controller(polyinterface.Controller):
                                 if tl['status'] == 'Connected':
                                     link_tap = linktap.LinkTap(self.username, self.apiKey)
                                     watering_status = link_tap.get_watering_status(tl['taplinkerId'])
-                                    if watering_status['status'] is not None:
-                                        # print(watering_status)
-                                        if watering_status['status']['onDuration']:
-                                            self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
-                                        if watering_status['status']['total']:
-                                            self.nodes[node].setDriver('GV3', watering_status['status']['total'])
-                                            watering_total = int(watering_status['status']['total'])
-                                            watering_duration = int(watering_status['status']['onDuration'])
-                                            watering_elapsed = watering_total - watering_duration
-                                            self.nodes[node].setDriver('GV4', watering_elapsed)
-                                    else:
-                                        self.nodes[node].setDriver('GV2', 0)
-                                        self.nodes[node].setDriver('GV3', 0)
-                                        self.nodes[node].setDriver('GV4', 0)
+                                    print(watering_status)
+                                    try:
+                                        if watering_status['status'] is not None:
+                                            if watering_status['status']['onDuration']:
+                                                self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
+                                            if watering_status['status']['total']:
+                                                self.nodes[node].setDriver('GV3', watering_status['status']['total'])
+                                                watering_total = int(watering_status['status']['total'])
+                                                watering_duration = int(watering_status['status']['onDuration'])
+                                                watering_elapsed = watering_total - watering_duration
+                                                self.nodes[node].setDriver('GV4', watering_elapsed)
+                                        else:
+                                            self.nodes[node].setDriver('GV2', 0)
+                                            self.nodes[node].setDriver('GV3', 0)
+                                            self.nodes[node].setDriver('GV4', 0)
+                                    except TypeError:
+                                        pass
         else:
             pass
 
