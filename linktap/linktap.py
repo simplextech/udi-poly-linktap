@@ -15,7 +15,19 @@ class LinkTap:
         self.username = username
         self.apiKey = apiKey
 
-    def activateInstantMode(self, gatewayId, taplinkerId, action, duration, eco):
+    def call_api(self, url, payload):
+        r = requests.post(url, data=payload)
+        if r.status_code == requests.codes.ok:
+            data = r.json()
+            if data['result'] == 'error':
+                return 'error'
+            else:
+                return data
+        else:
+            # LOGGER.debug(r.content)
+            return 'error'
+
+    def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):
         url = self.base_url + 'activateInstantMode'
 
         if action:
@@ -35,15 +47,17 @@ class LinkTap:
                    'action': action,
                    'duration': duration,
                    'eco': eco}
+        ret = self.call_api(url, payload)
+        return ret
 
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.content)
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.content)
             # r.raise_for_status()
 
-    def activateIntervalMode(self, gatewayId, taplinkerId):
+    def activate_interval_mode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateIntervalMode'
 
         payload = {'username': self.username,
@@ -51,15 +65,16 @@ class LinkTap:
                    'gatewayId': gatewayId,
                    'taplinkerId': taplinkerId
                    }
-
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.content)
+        ret = self.call_api(url, payload)
+        return ret
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.content)
             # r.raise_for_status()
 
-    def activateOddEvenMode(self, gatewayId, taplinkerId):
+    def activate_odd_even_mode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateOddEvenMode'
 
         payload = {'username': self.username,
@@ -67,15 +82,16 @@ class LinkTap:
                    'gatewayId': gatewayId,
                    'taplinkerId': taplinkerId
                    }
-
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.content)
+        ret = self.call_api(url, payload)
+        return ret
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.content)
             # r.raise_for_status()
 
-    def activateSevenDayMode(self, gatewayId, taplinkerId):
+    def activate_seven_day_mode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateSevenDayMode'
 
         payload = {'username': self.username,
@@ -83,15 +99,16 @@ class LinkTap:
                    'gatewayId': gatewayId,
                    'taplinkerId': taplinkerId
                    }
-
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.content)
+        ret = self.call_api(url, payload)
+        return ret
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.content)
             # r.raise_for_status()
 
-    def activateMonthMode(self, gatewayId, taplinkerId):
+    def activate_month_mode(self, gatewayId, taplinkerId):
         url = self.base_url + 'activateMonthMode'
 
         payload = {'username': self.username,
@@ -99,24 +116,36 @@ class LinkTap:
                    'gatewayId': gatewayId,
                    'taplinkerId': taplinkerId
                    }
-
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.status_code)
+        ret = self.call_api(url, payload)
+        return ret
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.status_code)
             # r.raise_for_status()
 
-    def getAllDevices(self):
+    def get_all_devices(self):
         url = self.base_url + 'getAllDevices'
         payload = {'username': self.username, 'apiKey': self.apiKey}
-        r = requests.post(url, data=payload)
+        ret = self.call_api(url, payload)
+        return ret
 
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        else:
-            LOGGER.debug(r.status_code)
+        # r = requests.post(url, data=payload)
+        # if r.status_code == requests.codes.ok:
+        #     return r.json()
+        # else:
+        #     LOGGER.debug(r.status_code)
             # r.raise_for_status()
+
+    def get_watering_status(self, taplinkerId):
+        url = self.base_url + 'getWateringStatus'
+        payload = {'username': self.username,
+                   'apiKey': self.apiKey,
+                   'taplinkerId': taplinkerId
+                   }
+        ret = self.call_api(url, payload)
+        return ret
 
 
 if __name__ == "__main__":

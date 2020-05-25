@@ -24,22 +24,39 @@ class Controller(polyinterface.Controller):
         LOGGER.info('Started LinkTap NodeServer')
         self.removeNoticesAll()
         if self.check_params():
-            self.getLinkTapDevices()
-            self.discover()
-            self.ready = True
-            # self.poly.add_custom_config_docs("<b>And this is some custom config data</b>")
+            if self.get_link_tap_devices():
+                self.discover()
+                self.ready = True
+            else:
+                LOGGER.info("start: Failed to start due to API error.")
 
-    def getLinkTapDevices(self):
+    def get_link_tap_devices(self):
         lt = linktap.LinkTap(self.username, self.apiKey)
-        all_devices = lt.getAllDevices()
-        self.data = all_devices
+        all_devices = lt.get_all_devices()
+        if all_devices == 'error':
+            LOGGER.info("get_link_tap_devices: The minimum interval of calling this API is 5 minutes.")
+            return False
+        else:
+            self.data = all_devices
+            return True
 
     def shortPoll(self):
-        pass
+        # Update Watering Status
+        LOGGER.info("Updating Watering Status")
+        for node in self.nodes:
+            if self.nodes[node].address != self.address:
+                for gw in self.data['devices']:
+                    for tl in gw['taplinker']:
+                        if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
+                            if tl['status'] == 'Connected':
+                                link_tap = linktap.LinkTap(self.username, self.apiKey)
+                                watering_status = link_tap.get_watering_status(tl['taplinkerId'])
+                                self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
+                                self.nodes[node].setDriver('GV3', watering_status['status']['total'])
 
     def longPoll(self):
         if self.ready:
-            self.getLinkTapDevices()
+            self.get_link_tap_devices()
             self.update()
         else:
             pass
@@ -205,6 +222,7 @@ class TapLinkNode(polyinterface.Node):
         super(TapLinkNode, self).__init__(controller, primary, address, name)
         self.data = controller.data
         self.primary = primary
+        self.dev_suffix = '004B1200'
 
     def start(self):
         for gw in self.data['devices']:
@@ -221,14 +239,16 @@ class TapLinkNode(polyinterface.Node):
     def setOff(self, command):
         self.setDriver('ST', 0)
 
-    def query(self):
+    def query(self, command):
+        for k, v in command:
+            print(k, v)
         self.reportDrivers()
 
     def instantOn(self, command):
-        dev_suffix = '004B1200'
+        # dev_suffix = '004B1200'
         val = command.get('value')
-        taplinker = command.get('address') + dev_suffix
-        gateway = self.primary + dev_suffix
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
         duration = int(val)
 
         if duration == 0:
@@ -239,39 +259,37 @@ class TapLinkNode(polyinterface.Node):
         eco = False
 
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
-        lt.activateInstantMode(gateway, taplinker, action, duration, eco)
+        lt.activate_instant_mode(gateway, taplinker, action, duration, eco)
 
     def intervalMode(self, command):
-        dev_suffix = '004B1200'
-        taplinker = command.get('address') + dev_suffix
-        gateway = self.primary + dev_suffix
-
+        # dev_suffix = '004B1200'
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
-        lt.activateIntervalMode(gateway, taplinker)
+        lt.activate_interval_mode(gateway, taplinker)
 
     def oddEvenMode(self, command):
-        dev_suffix = '004B1200'
-        taplinker = command.get('address') + dev_suffix
-        gateway = self.primary + dev_suffix
-
+        # dev_suffix = '004B1200'
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
-        lt.activateOddEvenMode(gateway, taplinker)
+        lt.activate_odd_even_mode(gateway, taplinker)
 
     def sevenDayMode(self, command):
-        dev_suffix = '004B1200'
-        taplinker = command.get('address') + dev_suffix
-        gateway = self.primary + dev_suffix
-
+        # dev_suffix = '004B1200'
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
-        lt.activateSevenDayMode(gateway, taplinker)
+        lt.activate_seven_day_mode(gateway, taplinker)
 
     def monthMode(self, command):
-        dev_suffix = '004B1200'
-        taplinker = command.get('address') + dev_suffix
-        gateway = self.primary + dev_suffix
-
+        # dev_suffix = '004B1200'
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
-        lt.activateMonthMode(gateway, taplinker)
+        lt.activate_month_mode(gateway, taplinker)
+
+
 
     # "Hints See: https://github.com/UniversalDevicesInc/hints"
     #hint = [1,2,3,4]
