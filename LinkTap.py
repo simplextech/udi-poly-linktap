@@ -53,7 +53,7 @@ class Controller(polyinterface.Controller):
                                 if tl['status'] == 'Connected':
                                     link_tap = linktap.LinkTap(self.username, self.apiKey)
                                     watering_status = link_tap.get_watering_status(tl['taplinkerId'])
-                                    print(watering_status)
+                                    # print(watering_status)
                                     try:
                                         if watering_status['status'] is not None:
                                             if watering_status['status']['onDuration']:
