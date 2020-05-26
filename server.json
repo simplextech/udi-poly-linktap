@@ -8,12 +8,12 @@
     "description": "LinkTap irrigation NodeServer",
     "notice": "",
     "shortPoll": "30",
-    "longPoll": "300",
+    "longPoll": "900",
     "credits": [
         {
             "title": "LinkTap: a NodeServer for LinkTap irrigation",
             "author": "Simplex Technology",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "date": "September 4, 2019",
             "source": "https://github.com/simplextech/udi-linktap-poly",
             "license": "https://github.com/simplextech/udi-linktap-poly/blob/master/LICENSE"
