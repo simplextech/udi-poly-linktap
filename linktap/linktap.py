@@ -24,7 +24,6 @@ class LinkTap:
             else:
                 return data
         else:
-            # LOGGER.debug(r.content)
             return 'error'
 
     def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):
