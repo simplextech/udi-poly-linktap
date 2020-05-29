@@ -6,6 +6,7 @@ except ImportError:
     import pgc_interface as polyinterface
 import sys
 import linktap
+import time
 
 LOGGER = polyinterface.LOGGER
 
@@ -28,7 +29,8 @@ class Controller(polyinterface.Controller):
                 self.discover()
                 self.ready = True
             else:
-                LOGGER.info("start: Failed to start due to API error.  Shutting down.")
+                LOGGER.info("start: Failed to start due to API Rate Limit.")
+                self.ready = False
                 polyglot.stop()
 
     def get_link_tap_devices(self):
@@ -36,6 +38,7 @@ class Controller(polyinterface.Controller):
         all_devices = lt.get_all_devices()
         if all_devices == 'error':
             LOGGER.info("get_link_tap_devices: The minimum interval of calling this API is 5 minutes.")
+            self.data = None
             return False
         else:
             self.data = all_devices
@@ -81,58 +84,57 @@ class Controller(polyinterface.Controller):
             pass
 
     def update(self):
-        for node in self.nodes:
-            if self.nodes[node].address != self.address:
-                for gw in self.data['devices']:
-                    if gw['gatewayId'][0:8].lower() == self.nodes[node].address:
-                        if gw['status'] == 'Connected':
-                            self.nodes[node].setDriver('ST', 1)
-                            #LOGGER.info('Status: Connected')
-                        else:
-                            self.nodes[node].setDriver('ST', 0)
-                            #LOGGER.info('Status: Disconnected')
-                    for tl in gw['taplinker']:
-                        if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
-                            if tl['status'] == 'Connected':
+        if self.ready:
+            for node in self.nodes:
+                if self.nodes[node].address != self.address:
+                    for gw in self.data['devices']:
+                        if gw['gatewayId'][0:8].lower() == self.nodes[node].address:
+                            if gw['status'] == 'Connected':
                                 self.nodes[node].setDriver('ST', 1)
                                 #LOGGER.info('Status: Connected')
                             else:
                                 self.nodes[node].setDriver('ST', 0)
                                 #LOGGER.info('Status: Disconnected')
-                            self.nodes[node].setDriver('BATLVL', tl['batteryStatus'].strip('%'))
-                            self.nodes[node].setDriver('GV0', tl['signal'].strip('%'))
-                            if tl['watering'] is not None:
-                                self.nodes[node].setDriver('GV1', 1)
-                                for key in tl['watering']:
-                                    if key == 'remaining':
-                                        self.nodes[node].setDriver('GV2', tl['watering'][key])
-                                    if key == 'total':
-                                        self.nodes[node].setDriver('GV3', tl['watering'][key])
-                            else:
-                                self.nodes[node].setDriver('GV1', 0)
-                                self.nodes[node].setDriver('GV2', 0)
-                                self.nodes[node].setDriver('GV3', 0)
+                        for tl in gw['taplinker']:
+                            if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
+                                if tl['status'] == 'Connected':
+                                    self.nodes[node].setDriver('ST', 1)
+                                    #LOGGER.info('Status: Connected')
+                                else:
+                                    self.nodes[node].setDriver('ST', 0)
+                                    #LOGGER.info('Status: Disconnected')
+                                self.nodes[node].setDriver('BATLVL', tl['batteryStatus'].strip('%'))
+                                self.nodes[node].setDriver('GV0', tl['signal'].strip('%'))
+                                if tl['watering'] is not None:
+                                    self.nodes[node].setDriver('GV1', 1)
+                                    for key in tl['watering']:
+                                        if key == 'remaining':
+                                            self.nodes[node].setDriver('GV2', tl['watering'][key])
+                                        if key == 'total':
+                                            self.nodes[node].setDriver('GV3', tl['watering'][key])
+                                else:
+                                    self.nodes[node].setDriver('GV1', 0)
+                                    self.nodes[node].setDriver('GV2', 0)
+                                    self.nodes[node].setDriver('GV3', 0)
 
     def query(self):
-        self.check_params()
-        for node in self.nodes:
-            self.nodes[node].reportDrivers()
+        if self.ready:
+            self.check_params()
+            for node in self.nodes:
+                self.nodes[node].reportDrivers()
 
     def discover(self, *args, **kwargs):
-
-        all_devices = self.data
-
-        for ctl in all_devices['devices']:
-            gw_name = ctl['name']
-            gw_address = ctl['gatewayId'][0:8].lower()
-            self.addNode(GatewayNode(self, gw_address, gw_address, gw_name))
-            for tl in ctl['taplinker']:
-                tl_name = tl['taplinkerName']
-                tl_address = tl['taplinkerId'][0:8].lower()
-                self.addNode(TapLinkNode(self, gw_address, tl_address, tl_name))
+        if self.data is not None:
+            for ctl in self.data['devices']:
+                gw_name = ctl['name']
+                gw_address = ctl['gatewayId'][0:8].lower()
+                self.addNode(GatewayNode(self, gw_address, gw_address, gw_name))
+                for tl in ctl['taplinker']:
+                    tl_name = tl['taplinkerName']
+                    tl_address = tl['taplinkerId'][0:8].lower()
+                    self.addNode(TapLinkNode(self, gw_address, tl_address, tl_name))
 
     def delete(self):
-
         LOGGER.info('LinkTap Nodeserver:  Deleted')
 
     def stop(self):
@@ -258,13 +260,10 @@ class TapLinkNode(polyinterface.Node):
     def setOff(self, command):
         self.setDriver('ST', 0)
 
-    def query(self, command):
-        for k, v in command:
-            print(k, v)
+    def query(self):
         self.reportDrivers()
 
     def instantOn(self, command):
-        # dev_suffix = '004B1200'
         val = command.get('value')
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
@@ -283,37 +282,31 @@ class TapLinkNode(polyinterface.Node):
         self.setDriver('GV3', duration)
 
     def intervalMode(self, command):
-        # dev_suffix = '004B1200'
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activate_interval_mode(gateway, taplinker)
 
     def oddEvenMode(self, command):
-        # dev_suffix = '004B1200'
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activate_odd_even_mode(gateway, taplinker)
 
     def sevenDayMode(self, command):
-        # dev_suffix = '004B1200'
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activate_seven_day_mode(gateway, taplinker)
 
     def monthMode(self, command):
-        # dev_suffix = '004B1200'
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
         lt.activate_month_mode(gateway, taplinker)
 
-
-
     # "Hints See: https://github.com/UniversalDevicesInc/hints"
-    #hint = [1,2,3,4]
+    # hint = [1,2,3,4]
     drivers = [
         {'driver': 'ST', 'value': 0, 'uom': 2},
         {'driver': 'BATLVL', 'value': 0, 'uom': 51},
