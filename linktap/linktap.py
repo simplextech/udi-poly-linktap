@@ -45,7 +45,9 @@ class LinkTap:
                    'taplinkerId': taplinkerId,
                    'action': action,
                    'duration': duration,
-                   'eco': eco}
+                   'eco': eco,
+                   'autoBack': "true"
+                   }
         ret = self.call_api(url, payload)
         return ret
 
