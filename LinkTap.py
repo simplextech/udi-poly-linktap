@@ -7,8 +7,10 @@ except ImportError:
 import sys
 import linktap
 import time
+import logging
 
 LOGGER = polyinterface.LOGGER
+logging.getLogger('urllib3').setLevel(logging.INFO)
 
 
 class Controller(polyinterface.Controller):
