@@ -17,6 +17,6 @@
     </editor>
 
     <editor id="GV5"> <!-- Instant On Minutes -->
-        <range uom="44" min="0" max="120" step="1" prec="0" />
+        <range uom="44" min="1" max="120" step="1" prec="0" />
     </editor>
 </editors>

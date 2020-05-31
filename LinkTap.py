@@ -281,11 +281,11 @@ class TapLinkNode(polyinterface.Node):
         gateway = self.primary + self.dev_suffix
         duration = int(val)
 
-        if duration == 0:
-            action = False
-        else:
-            action = True
-
+        # if duration == 0:
+        #     action = False
+        # else:
+        #     action = True
+        action = True
         eco = False
 
         lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
