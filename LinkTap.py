@@ -57,6 +57,7 @@ class Controller(polyinterface.Controller):
                                     try:
                                         if watering_status['status'] is not None:
                                             if watering_status['status']['onDuration']:
+                                                self.nodes[node].setDriver('GV1', 1)
                                                 self.nodes[node].setDriver('GV2', watering_status['status']['onDuration'])
                                             if watering_status['status']['total']:
                                                 self.nodes[node].setDriver('GV3', watering_status['status']['total'])
@@ -65,6 +66,7 @@ class Controller(polyinterface.Controller):
                                                 watering_elapsed = watering_total - watering_duration
                                                 self.nodes[node].setDriver('GV4', watering_elapsed)
                                         else:
+                                            self.nodes[node].setDriver('GV1', 0)
                                             self.nodes[node].setDriver('GV2', 0)
                                             self.nodes[node].setDriver('GV3', 0)
                                             self.nodes[node].setDriver('GV4', 0)
