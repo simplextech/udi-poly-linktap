@@ -6,7 +6,6 @@ except ImportError:
     import pgc_interface as polyinterface
 import sys
 import linktap
-import time
 
 LOGGER = polyinterface.LOGGER
 
