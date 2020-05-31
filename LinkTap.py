@@ -6,6 +6,7 @@ except ImportError:
     import pgc_interface as polyinterface
 import sys
 import linktap
+import time
 
 LOGGER = polyinterface.LOGGER
 
@@ -19,18 +20,13 @@ class Controller(polyinterface.Controller):
         self.apiKey = ''
         self.data = None
         self.ready = False
+        self.retry_count = 1
 
     def start(self):
         LOGGER.info('Started LinkTap NodeServer')
         self.removeNoticesAll()
         if self.check_params():
-            if self.get_link_tap_devices():
-                self.discover()
-                self.ready = True
-            else:
-                LOGGER.info("start: Failed to start due to API Rate Limit.")
-                self.ready = False
-                polyglot.stop()
+            self.discover()
 
     def get_link_tap_devices(self):
         lt = linktap.LinkTap(self.username, self.apiKey)
@@ -122,8 +118,19 @@ class Controller(polyinterface.Controller):
             for node in self.nodes:
                 self.nodes[node].reportDrivers()
 
+    def discover_retry(self):
+        retry_count = str(self.retry_count)
+        if self.retry_count <= 3:
+            LOGGER.info("discover_retry: Failed to start.  Retrying attempt: " + retry_count)
+            self.retry_count += 1
+            self.discover()
+        else:
+            LOGGER.info("discover_retry: Failed to start after 3 retries.  Aborting")
+            polyglot.stop()
+
     def discover(self, *args, **kwargs):
-        if self.data is not None:
+        if self.get_link_tap_devices():
+        # if self.data is not None:
             for ctl in self.data['devices']:
                 gw_name = ctl['name']
                 gw_address = ctl['gatewayId'][0:8].lower()
@@ -132,6 +139,12 @@ class Controller(polyinterface.Controller):
                     tl_name = tl['taplinkerName']
                     tl_address = tl['taplinkerId'][0:8].lower()
                     self.addNode(TapLinkNode(self, gw_address, tl_address, tl_name))
+            self.ready = True
+        else:
+            LOGGER.info("discover: Failed to start due to API Rate Limit.  Will retry in 5 minutes")
+            self.ready = False
+            time.sleep(300)
+            self.discover_retry()
 
     def delete(self):
         LOGGER.info('LinkTap Nodeserver:  Deleted')
