@@ -14,18 +14,19 @@ Polyglot running on rPi, Polisy or Polyglot Cloud
    - [API Setup](https://www.link-tap.com/#!/api-for-developers)
  - API Limitations
    - LinkTap Rate limits calls to 1 per minute (60 seconds).  Trying to make
-   more calles during this time period will result in an error in the logs stating
+   more calls during this time period will result in an error in the logs stating
    a rate limit error
-   - Long Poll configuration defaults to 300 seconds (5 minutes).  If you lower this to the 
-   minimum of 60 seconds you can only make 1 command call or status call during that
-   1 minute time frame.
+   - Long Poll configuration defaults to 15 minutes (900 seconds).  Minimum is 5 minutes (300 seconds)
+     - Long Poll updates online status, battery, signal
+   - Short Poll runs at 30 second intervals and updates the watering status
  
 ## Usage
 This Nodeserver provides status information of the LinkTap devices and can also
 be used in programs for watering schedules.
 
 - Basic features are
-  - instant on (0 minutes is Off, any other value is On)
+  - instant On (up to 120 minutes)
+  - Instant Off
   - Set Watering Modes
     - Interval Mode
     - Odd-Even Mode
