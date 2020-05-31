@@ -130,7 +130,6 @@ class Controller(polyinterface.Controller):
 
     def discover(self, *args, **kwargs):
         if self.get_link_tap_devices():
-        # if self.data is not None:
             for ctl in self.data['devices']:
                 gw_name = ctl['name']
                 gw_address = ctl['gatewayId'][0:8].lower()
@@ -140,6 +139,7 @@ class Controller(polyinterface.Controller):
                     tl_address = tl['taplinkerId'][0:8].lower()
                     self.addNode(TapLinkNode(self, gw_address, tl_address, tl_name))
             self.ready = True
+            self.update()
         else:
             LOGGER.info("discover: Failed to start due to API Rate Limit.  Will retry in 5 minutes")
             self.ready = False
@@ -293,6 +293,19 @@ class TapLinkNode(polyinterface.Node):
         self.setDriver('GV2', duration)
         self.setDriver('GV3', duration)
 
+    def instantOff(self, command):
+        taplinker = command.get('address') + self.dev_suffix
+        gateway = self.primary + self.dev_suffix
+        duration = 0
+        action = False
+        eco = False
+
+        lt = linktap.LinkTap(self.controller.username, self.controller.apiKey)
+        lt.activate_instant_mode(gateway, taplinker, action, duration, eco)
+        self.setDriver('GV2', duration)
+        self.setDriver('GV3', duration)
+
+
     def intervalMode(self, command):
         taplinker = command.get('address') + self.dev_suffix
         gateway = self.primary + self.dev_suffix
@@ -332,7 +345,8 @@ class TapLinkNode(polyinterface.Node):
 
     id = 'taplinker'
     commands = {
-                'GV5': instantOn, 'GV6': intervalMode, 'GV7': oddEvenMode, 'GV8': sevenDayMode, 'GV9': monthMode
+                'GV5': instantOn, 'GV10': instantOff, 'GV6': intervalMode, 'GV7': oddEvenMode,
+                'GV8': sevenDayMode, 'GV9': monthMode
                 }
 
 

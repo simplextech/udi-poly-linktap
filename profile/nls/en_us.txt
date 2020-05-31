@@ -25,3 +25,4 @@ CMD-taplinker-GV6-NAME = Interval Mode
 CMD-taplinker-GV7-NAME = Odd-Even Mode
 CMD-taplinker-GV8-NAME = Seven Day Mode
 CMD-taplinker-GV9-NAME = Month Mode
+CMD-taplinker-GV10-NAME = Instant Off

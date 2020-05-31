@@ -48,6 +48,7 @@
         <cmds>
             <sends />
             <accepts>
+                <cmd id="GV10" />
                 <cmd id="GV6" />
                 <cmd id="GV7" />
                 <cmd id="GV8" />
