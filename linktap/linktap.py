@@ -16,15 +16,19 @@ class LinkTap:
         self.apiKey = apiKey
 
     def call_api(self, url, payload):
-        r = requests.post(url, data=payload)
-        if r.status_code == requests.codes.ok:
-            data = r.json()
-            if data['result'] == 'error':
-                return 'error'
+        try:
+            r = requests.post(url, data=payload)
+            if r.status_code == requests.codes.ok:
+                data = r.json()
+                if data['result'] == 'error':
+                    return 'error'
+                else:
+                    return data
             else:
-                return data
-        else:
-            return 'error'
+                return 'error'
+        except requests.exceptions.RequestException:
+            LOGGER.info("call_api:  Request failed due to connection issue")
+            pass
 
     def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):
         url = self.base_url + 'activateInstantMode'
