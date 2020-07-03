@@ -9,11 +9,11 @@ ST-ctl-ST-NAME = NodeServer Online
 
 # LinkTap Gateway
 ND-gateway-NAME = LinkTap Gateway
-ST-gateway-ST-NAME = Status
+ST-gateway-ST-NAME = Online
 
 # LinkTap TapLink
 ND-taplinker-NAME = TapLinker Node
-ST-taplinker-ST-NAME = Status
+ST-taplinker-ST-NAME = Online
 ST-taplinker-BATLVL-NAME = Battery
 ST-taplinker-GV0-NAME = Signal
 ST-taplinker-GV1-NAME = Watering
