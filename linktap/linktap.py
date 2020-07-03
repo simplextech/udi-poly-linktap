@@ -27,7 +27,15 @@ class LinkTap:
             else:
                 return 'error'
         except requests.exceptions.RequestException:
-            LOGGER.info("call_api:  Request failed due to connection issue")
+            LOGGER.info("call_api:  Request failed: RequestException")
+        except socket.gaierror:
+            LOGGER.info("call_api:  Request failed: gaierror Name does not resolve")
+        except urllib3.exceptions.NewConnectionError:
+            LOGGER.info("call_api:  Request failed: NewConnectionError")
+        except urllib3.exceptions.MaxRetryError
+            LOGGER.info("call_api:  Request failed: MaxRetryError")
+        except requests.exceptions.ConnectionError:
+            LOGGER.info("call_api:  Request failed: ConnectionError")
             pass
 
     def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):
