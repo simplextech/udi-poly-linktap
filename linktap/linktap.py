@@ -28,12 +28,16 @@ class LinkTap:
                 return 'error'
         except requests.exceptions.RequestException:
             LOGGER.info("call_api:  Request failed: RequestException")
+            pass
         except socket.gaierror:
             LOGGER.info("call_api:  Request failed: gaierror Name does not resolve")
+            pass
         except urllib3.exceptions.NewConnectionError:
             LOGGER.info("call_api:  Request failed: NewConnectionError")
-        except urllib3.exceptions.MaxRetryError
+            pass
+        except urllib3.exceptions.MaxRetryError:
             LOGGER.info("call_api:  Request failed: MaxRetryError")
+            pass
         except requests.exceptions.ConnectionError:
             LOGGER.info("call_api:  Request failed: ConnectionError")
             pass
