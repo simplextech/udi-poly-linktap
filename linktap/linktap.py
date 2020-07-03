@@ -20,7 +20,6 @@ class LinkTap:
             r = requests.post(url, data=payload)
             if r.status_code == requests.codes.ok:
                 data = r.json()
-                LOGGER.info(data)
                 if data['result'] == 'error':
                     return 'error'
                 elif data is None:
