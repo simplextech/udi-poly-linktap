@@ -20,26 +20,29 @@ class LinkTap:
             r = requests.post(url, data=payload)
             if r.status_code == requests.codes.ok:
                 data = r.json()
+                LOGGER.info(data)
                 if data['result'] == 'error':
+                    return 'error'
+                elif data is None:
                     return 'error'
                 else:
                     return data
             else:
                 return 'error'
         except requests.exceptions.RequestException:
-            LOGGER.info("call_api:  Request failed: RequestException")
+            LOGGER.info("Request failed: RequestException")
             pass
         except socket.gaierror:
-            LOGGER.info("call_api:  Request failed: gaierror Name does not resolve")
+            LOGGER.info("Request failed: gaierror Name does not resolve")
             pass
         except urllib3.exceptions.NewConnectionError:
-            LOGGER.info("call_api:  Request failed: NewConnectionError")
+            LOGGER.info("Request failed: NewConnectionError")
             pass
         except urllib3.exceptions.MaxRetryError:
-            LOGGER.info("call_api:  Request failed: MaxRetryError")
+            LOGGER.info("Request failed: MaxRetryError")
             pass
         except requests.exceptions.ConnectionError:
-            LOGGER.info("call_api:  Request failed: ConnectionError")
+            LOGGER.info("Request failed: ConnectionError")
             pass
 
     def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):

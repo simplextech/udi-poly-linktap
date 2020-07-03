@@ -37,6 +37,10 @@ class Controller(polyinterface.Controller):
             LOGGER.info("get_link_tap_devices: The minimum interval of calling this API is 5 minutes.")
             self.data = None
             return False
+        elif all_devices is None:
+            LOGGER.info("Get all devices failed")
+            self.data = None
+            return False
         else:
             self.data = all_devices
             return True
@@ -124,12 +128,12 @@ class Controller(polyinterface.Controller):
 
     def discover_retry(self):
         retry_count = str(self.retry_count)
-        if self.retry_count <= 3:
+        if self.retry_count <= 3000:
             LOGGER.info("discover_retry: Failed to start.  Retrying attempt: " + retry_count)
             self.retry_count += 1
             self.discover()
         else:
-            LOGGER.info("discover_retry: Failed to start after 3 retries.  Aborting")
+            LOGGER.info("discover_retry: Failed to start after 3000 retries.  Aborting")
             polyglot.stop()
 
     def discover(self, *args, **kwargs):
@@ -145,7 +149,7 @@ class Controller(polyinterface.Controller):
             self.ready = True
             self.update()
         else:
-            LOGGER.info("discover: Failed to start due to API Rate Limit.  Will retry in 5 minutes")
+            LOGGER.info("Failed to get devices.  Will retry in 5 minutes")
             self.ready = False
             time.sleep(300)
             self.discover_retry()
