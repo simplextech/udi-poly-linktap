@@ -165,8 +165,8 @@ class Controller(polyinterface.Controller):
     def process_config(self, config):
         # this seems to get called twice for every change, why?
         # What does config represent?
-        LOGGER.info("process_config: Enter config={}".format(config));
-        LOGGER.info("process_config: Exit");
+        LOGGER.info("process_config: Enter config={}".format(config))
+        LOGGER.info("process_config: Exit")
 
     def check_params(self):
         default_username = "YourUserName"
