@@ -81,8 +81,10 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         if self.ready:
-            self.get_link_tap_devices()
-            self.update()
+            if self.get_link_tap_devices():
+                self.update()
+            else:
+                LOGGER.info("LinkTap Devices API returned None")
         else:
             pass
 
