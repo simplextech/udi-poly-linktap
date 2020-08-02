@@ -36,13 +36,16 @@ class Controller(polyinterface.Controller):
         if all_devices == 'error':
             LOGGER.info("get_link_tap_devices: The minimum interval of calling this API is 5 minutes.")
             self.data = None
+            self.ready = False
             return False
         elif all_devices is None:
             LOGGER.info("Get all devices failed")
             self.data = None
+            self.ready = False
             return False
         else:
             self.data = all_devices
+            self.ready = True
             return True
 
     def shortPoll(self):
