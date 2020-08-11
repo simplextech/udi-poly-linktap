@@ -147,10 +147,12 @@ class Controller(polyinterface.Controller):
                 gw_name = ctl['name']
                 gw_address = ctl['gatewayId'][0:8].lower()
                 self.addNode(GatewayNode(self, gw_address, gw_address, gw_name))
+                time.sleep(2)
                 for tl in ctl['taplinker']:
                     tl_name = tl['taplinkerName']
                     tl_address = tl['taplinkerId'][0:8].lower()
                     self.addNode(TapLinkNode(self, gw_address, tl_address, tl_name))
+                    time.sleep(2)
             self.ready = True
             self.update()
         else:
