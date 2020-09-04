@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
-try:
-    import polyinterface
-except ImportError:
-    import pgc_interface as polyinterface
 import sys
 import linktap
 import time
 import logging
+
+try:
+    import polyinterface
+    CLOUD = False
+except ImportError:
+    import pgc_interface as polyinterface
+    CLOUD = True
+
 
 LOGGER = polyinterface.LOGGER
 logging.getLogger('urllib3').setLevel(logging.INFO)
@@ -98,32 +102,32 @@ class Controller(polyinterface.Controller):
                     for gw in self.data['devices']:
                         if gw['gatewayId'][0:8].lower() == self.nodes[node].address:
                             if gw['status'] == 'Connected':
-                                self.nodes[node].setDriver('ST', 1)
+                                self.nodes[node].setDriver('ST', 1, force=True)
                                 #LOGGER.info('Status: Connected')
                             else:
-                                self.nodes[node].setDriver('ST', 0)
+                                self.nodes[node].setDriver('ST', 0, force=True)
                                 #LOGGER.info('Status: Disconnected')
                         for tl in gw['taplinker']:
                             if tl['taplinkerId'][0:8].lower() == self.nodes[node].address:
                                 if tl['status'] == 'Connected':
-                                    self.nodes[node].setDriver('ST', 1)
+                                    self.nodes[node].setDriver('ST', 1, force=True)
                                     #LOGGER.info('Status: Connected')
                                 else:
-                                    self.nodes[node].setDriver('ST', 0)
+                                    self.nodes[node].setDriver('ST', 0, force=True)
                                     #LOGGER.info('Status: Disconnected')
-                                self.nodes[node].setDriver('BATLVL', tl['batteryStatus'].strip('%'))
-                                self.nodes[node].setDriver('GV0', tl['signal'].strip('%'))
+                                self.nodes[node].setDriver('BATLVL', tl['batteryStatus'].strip('%'), force=True)
+                                self.nodes[node].setDriver('GV0', tl['signal'].strip('%'), force=True)
                                 if tl['watering'] is not None:
-                                    self.nodes[node].setDriver('GV1', 1)
+                                    self.nodes[node].setDriver('GV1', 1, force=True)
                                     for key in tl['watering']:
                                         if key == 'remaining':
-                                            self.nodes[node].setDriver('GV2', tl['watering'][key])
+                                            self.nodes[node].setDriver('GV2', tl['watering'][key], force=True)
                                         if key == 'total':
-                                            self.nodes[node].setDriver('GV3', tl['watering'][key])
+                                            self.nodes[node].setDriver('GV3', tl['watering'][key], force=True)
                                 else:
-                                    self.nodes[node].setDriver('GV1', 0)
-                                    self.nodes[node].setDriver('GV2', 0)
-                                    self.nodes[node].setDriver('GV3', 0)
+                                    self.nodes[node].setDriver('GV1', 0, force=True)
+                                    self.nodes[node].setDriver('GV2', 0, force=True)
+                                    self.nodes[node].setDriver('GV3', 0, force=True)
 
     def query(self):
         if self.ready:
@@ -273,13 +277,35 @@ class TapLinkNode(polyinterface.Node):
         self.dev_suffix = '004B1200'
 
     def start(self):
+        # for gw in self.data['devices']:
+        #     for tl in gw['taplinker']:
+        #         if tl['taplinkerId'][0:8].lower() == self.address:
+        #             if tl['status'] == 'Connected':
+        #                 self.setDriver('ST', 1)
+        #             else:
+        #                 self.setDriver('ST', 0)
+
         for gw in self.data['devices']:
             for tl in gw['taplinker']:
                 if tl['taplinkerId'][0:8].lower() == self.address:
                     if tl['status'] == 'Connected':
-                        self.setDriver('ST', 1)
+                        self.setDriver('ST', 1, force=True)
                     else:
-                        self.setDriver('ST', 0)
+                        self.setDriver('ST', 0, force=True)
+                        # LOGGER.info('Status: Disconnected')
+                    self.setDriver('BATLVL', tl['batteryStatus'].strip('%'), force=True)
+                    self.setDriver('GV0', tl['signal'].strip('%'), force=True)
+                    if tl['watering'] is not None:
+                        self.setDriver('GV1', 1, force=True)
+                        for key in tl['watering']:
+                            if key == 'remaining':
+                                self.setDriver('GV2', tl['watering'][key], force=True)
+                            if key == 'total':
+                                self.setDriver('GV3', tl['watering'][key], force=True)
+                    else:
+                        self.setDriver('GV1', 0, force=True)
+                        self.setDriver('GV2', 0, force=True)
+                        self.setDriver('GV3', 0, force=True)
 
     def setOn(self, command):
         self.setDriver('ST', 1)
