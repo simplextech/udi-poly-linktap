@@ -30,7 +30,6 @@ class Controller(polyinterface.Controller):
 
     def start(self):
         LOGGER.info('Started LinkTap NodeServer')
-        self.removeNoticesAll()
         if self.check_params():
             self.discover()
 
@@ -175,7 +174,7 @@ class Controller(polyinterface.Controller):
 
     def check_params(self):
         default_username = "YourUserName"
-        default_apiKey = "YourApiKey"
+        default_api_key = "YourApiKey"
 
         if 'username' in self.polyConfig['customParams']:
             self.username = self.polyConfig['customParams']['username']
@@ -187,24 +186,27 @@ class Controller(polyinterface.Controller):
         if 'apiKey' in self.polyConfig['customParams']:
             self.apiKey = self.polyConfig['customParams']['apiKey']
         else:
-            self.apiKey = default_apiKey
+            self.apiKey = default_api_key
             LOGGER.error('check_params: apiKey not defined in customParams, please add it.  '
                          'Using {}'.format(self.apiKey))
 
-        self.addCustomParam({'apiKey': self.apiKey, 'username': self.username})
+        self.addCustomParam({'username': self.username, 'apiKey': self.apiKey})
+        time.sleep(2)
 
-        if self.username == default_username or self.apiKey == default_apiKey:
-            self.addNotice('Please set proper user and apiKey in configuration page, and restart this nodeserver')
+        if self.username == default_username or self.apiKey == default_api_key:
+            self.addNotice({'params_notice': 'Please set proper user and apiKey in '
+                            'configuration page, and restart this nodeserver'})
             return False
         else:
+            self.remove_notices_all()
             return True
 
     def remove_notice_test(self, command):
         LOGGER.info('remove_notice_test: notices={}'.format(self.poly.config['notices']))
-        # Remove all existing notices
+        # Remove named notices
         self.removeNotice('test')
 
-    def remove_notices_all(self, command):
+    def remove_notices_all(self):
         LOGGER.info('remove_notices_all: notices={}'.format(self.poly.config['notices']))
         # Remove all existing notices
         self.removeNoticesAll()
@@ -213,7 +215,6 @@ class Controller(polyinterface.Controller):
         LOGGER.info('update_profile:')
         st = self.poly.installprofile()
         return st
-
 
     id = 'controller'
     commands = {
