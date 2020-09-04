@@ -9,6 +9,7 @@
     "notice": "",
     "shortPoll": "30",
     "longPoll": "900",
+    "testMode": false,
     "credits": [
         {
             "title": "LinkTap: a NodeServer for LinkTap irrigation",
