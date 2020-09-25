@@ -47,6 +47,9 @@ class LinkTap:
     def activate_instant_mode(self, gatewayId, taplinkerId, action, duration, eco):
         url = self.base_url + 'activateInstantMode'
 
+        # autoBack:  Re-activate watering plan after Instant Mode
+        auto_back = "true"
+
         if action:
             action = "true"
         else:
@@ -64,7 +67,7 @@ class LinkTap:
                    'action': action,
                    'duration': duration,
                    'eco': eco,
-                   'autoBack': "true"
+                   'autoBack': auto_back,
                    }
         ret = self.call_api(url, payload)
         return ret
