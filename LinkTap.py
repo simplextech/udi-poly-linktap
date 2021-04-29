@@ -111,7 +111,8 @@ class Controller(polyinterface.Controller):
                                 else:
                                     self.nodes[node].setDriver('ST', 0, force=False)
                                 self.nodes[node].setDriver('BATLVL', tl['batteryStatus'].strip('%'), force=False)
-                                self.nodes[node].setDriver('GV0', tl['signal'].strip('%'), force=False)
+                                # self.nodes[node].setDriver('GV0', tl['signal'].strip('%'), force=False)
+                                self.nodes[node].setDriver('GV0', tl['signal'], force=False)
                                 if tl['watering'] is not None:
                                     self.nodes[node].setDriver('GV1', 1, force=False)
                                     for key in tl['watering']:
@@ -282,7 +283,8 @@ class TapLinkNode(polyinterface.Node):
                     else:
                         self.setDriver('ST', 0, force=True)
                     self.setDriver('BATLVL', tl['batteryStatus'].strip('%'), force=True)
-                    self.setDriver('GV0', tl['signal'].strip('%'), force=True)
+                    # self.setDriver('GV0', tl['signal'].strip('%'), force=True)
+                    self.setDriver('GV0', tl['signal'], force=True)
                     if tl['watering'] is not None:
                         self.setDriver('GV1', 1, force=True)
                         for key in tl['watering']:
